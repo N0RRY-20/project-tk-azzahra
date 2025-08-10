@@ -25,6 +25,7 @@
             <thead class="bg-gray-200">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama kelas</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wali Kelas</th>      
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
@@ -32,7 +33,7 @@
                 @forelse ($kelass as $kelas)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $kelas->nama_kelas }}</td>
-                        
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $kelas->waliKelas->nama_lengkap ?? 'Belum Ditentukan' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="{{ route('admin.kelas.edit', $kelas->id_kelas) }}" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
                             <form action="{{ route('admin.kelas.destroy', $kelas->id_kelas) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">

@@ -23,6 +23,13 @@ class LoginController extends Controller
             if (Auth::user()->peran === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
+            if (Auth::user()->peran === 'guru') {
+                return redirect()->route('guru.dashboard');
+            }
+            if (Auth::user()->peran === 'orangtua') {
+                return redirect()->route('orangtua.dashboard');
+            }
+
             return redirect()->intended('dashboard');
         }
 

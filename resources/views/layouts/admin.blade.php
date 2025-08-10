@@ -15,11 +15,28 @@
         <div :class="{'translate-x-0 ease-out': sidebarOpen, '-translate-x-full ease-in': !sidebarOpen}" class="fixed inset-y-0 left-0 z-30 w-64 bg-gray-800 text-white p-5 transform transition duration-300 md:relative md:translate-x-0 md:flex md:flex-col">
             <h2 class="text-2xl font-bold mb-10">TK Ceria</h2>
             <nav class="flex-1">
+        @if(Auth::user()->peran === 'admin')
                  <a href="{{ route('admin.dashboard') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Dashboard</a>
+                 <div class="mt-4">
+                    <p class="px-4 text-xs text-gray-400 uppercase">Manajemen</p>
                 <a href="{{ route('admin.guru.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.guru.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Guru</a>
                <a href="{{ route('admin.siswa.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.siswa.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Siswa</a>
                <a href="{{ route('admin.kelas.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.kelas.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Kelas</a>
                <a href="{{ route('admin.aspekPenilaian.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.aspekPenilaian.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen Aspek Penilaian</a>
+               {{-- <a href="{{ route('guru.laporan.create') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('guru.laporan.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Laporan Perkembangan Anak</a> --}}
+            </div>
+               <div class="mt-4">
+                <p class="px-4 text-xs text-gray-400 uppercase">Rekapitulasi</p>
+                <a href="{{ route('admin.absensi.siswa') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.absensi.siswa') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Absensi Siswa</a>
+                <a href="{{ route('admin.absensi-guru.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.absensi-guru.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Absensi Guru</a>
+                
+            </div>
+
+        @endif
+               @if(Auth::user()->peran === 'guru')
+               <a href="{{ route('guru.dashboard') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('guru.dashboard.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Dashboard</a>
+               <a href="{{ route('guru.absensi.create') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('guru.absensi.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Absensi Harian</a>
+                @endif
             </nav>
                 </nav>
             <form method="POST" action="{{ route('logout') }}" class="mt-10">

@@ -4,9 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class Admin
+class OrangtuaMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,6 +16,9 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        if (Auth::check() && Auth::user()->peran === 'orangtua') {
+            return $next($request);
+        }
+        abort(403, 'AKSES DITOLAK. HANYA UNTUK ORANG TUA.');
     }
 }

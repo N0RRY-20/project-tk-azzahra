@@ -8,6 +8,15 @@ class LaporanPerkembangan extends Model
 {
     protected $primaryKey = 'id_laporan';
     protected $table = 'laporan_perkembangan';
+    protected $fillable = [
+        'id_siswa',
+        'id_guru',
+        'id_aspek',
+        'capaian',
+        'catatan_guru',
+        'tanggal_laporan',
+    ];
+    
 
     public function siswa()
     {

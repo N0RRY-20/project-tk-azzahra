@@ -24,8 +24,9 @@ class SiswaController extends Controller
      */
     public function create()
     {
+        $siswa = new Siswa();
         $kelasList = Kelas::all(); // Untuk dropdown pilihan kelas
-        return view('admin.siswa.create', compact('kelasList'));
+        return view('admin.siswa.create', compact('kelasList','siswa'));
     }
 
     /**
@@ -76,6 +77,10 @@ class SiswaController extends Controller
             'telepon_orangtua' => 'nullable|string|max:20',
             'id_kelas' => 'required|exists:kelas,id_kelas',
         ]);
+
+        if ($request->has('regenerate_code')) {
+            $validatedData['kode_aktivasi'] = strtoupper(Str::random(8));
+        }
 
         $siswa->update($validatedData);
 

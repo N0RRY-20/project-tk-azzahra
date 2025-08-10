@@ -11,8 +11,11 @@ class Siswa extends Model
 
     protected $fillable  = [
         'nama_lengkap',
+        'tanggal_lahir',
+        'telepon_orangtua',
         'id_kelas',
-        'tanggal_lahir'
+        'id_orangtua',
+        'kode_aktivasi',
     ];
 
     public function kelas()
@@ -28,5 +31,10 @@ class Siswa extends Model
     public function laporanPerkembangan()
     {
         return $this->hasMany(LaporanPerkembangan::class, 'id_siswa');
+    }
+    public function absensi()
+    {
+        // Satu siswa memiliki banyak (hasMany) catatan absensi
+        return $this->hasMany(AbsensiSiswa::class, 'id_siswa', 'id_siswa');
     }
 }

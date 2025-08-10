@@ -8,6 +8,13 @@ class AspekPenilaian extends Model
 {
     protected $primaryKey = 'id_aspek';
     protected $table = 'aspek_penilaian';
+    protected $fillable = [
+        'kategori',
+        'deskripsi'
+    ];
+   
+// Hapus $fillable
+
     public function laporanPerkembangan()
     {
         return $this->hasMany(LaporanPerkembangan::class, 'id_aspek');

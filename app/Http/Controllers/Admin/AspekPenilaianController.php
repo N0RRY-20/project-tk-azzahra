@@ -13,8 +13,8 @@ class AspekPenilaianController extends Controller
      */
     public function index()
     {
-        $aspekPenilaian = AspekPenilaian::with('laporanPerkembangan')->latest()->get();
-        return view('admin.aspekPenilaian.index', compact('aspekPenilaian'));
+        $aspeks = AspekPenilaian::with('laporanPerkembangan')->latest()->get();
+        return view('admin.aspekPenilaian.index', compact('aspeks'));
     }
 
     /**
@@ -22,7 +22,7 @@ class AspekPenilaianController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.aspekPenilaian.create');
     }
 
     /**
@@ -30,7 +30,19 @@ class AspekPenilaianController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $validatedData = $request->validate([
+            'kategori' => 'required|string|max:255',
+            'deskripsi' => 'required|string|max:255'
+
+        ]);
+
+        $aspek = AspekPenilaian::create([
+            'kategori' => $validatedData['kategori'],
+            'deskripsi' => $validatedData['deskripsi'],
+
+        ]);
+
+        return redirect()->route('admin.aspekPenilaian.index')->with('success', 'Data Aspek Penilaian berhasil ditambahkan.');
     }
 
     /**
@@ -44,25 +56,33 @@ class AspekPenilaianController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(AspekPenilaian $aspekPenilaian)
     {
-        //
+         return view('admin.aspekPenilaian.edit', compact('aspekPenilaian'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, AspekPenilaian $aspekPenilaian)
     {
-        //
+          $validatedData = $request->validate([
+            'kategori' => 'required|string|max:255',
+            'deskripsi' => 'required|string|max:255',
+
+        ]);
+
+        $aspekPenilaian->update($validatedData);
+
+        return redirect()->route('admin.aspekPenilaian.index')->with('success', 'Data Aspek Penilaian berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AspekPenilaian $id)
+    public function destroy(AspekPenilaian $aspekPenilaian)
     {
-        $id->delete();
+        $aspekPenilaian->delete();
         return redirect()->route('admin.aspekPenilaian.index')->with('success', 'Data Aspek berhasil dihapus.');
     }
 }

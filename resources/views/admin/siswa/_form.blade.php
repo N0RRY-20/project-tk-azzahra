@@ -34,6 +34,16 @@
     @error('id_kelas')<p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>@enderror
 </div>
 
+@if (!$siswa->id_orangtua)
+    <div class="mb-6">
+        <label class="block text-gray-700 font-bold">
+            <input type="checkbox" name="regenerate_code" class="mr-2 leading-tight">
+            <span>Buat Ulang Kode Aktivasi</span>
+        </label>
+        <p class="text-gray-600 text-xs italic mt-2">Centang kotak ini jika orang tua kehilangan atau belum menerima kode aktivasi.</p>
+    </div>
+@endif
+
 <div class="flex items-center justify-between">
     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
         {{ isset($siswa) ? 'Perbarui' : 'Simpan' }}

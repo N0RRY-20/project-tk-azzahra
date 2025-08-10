@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @forelse ($aspekPenilaian as $aspek)
+                @forelse ($aspeks as $aspek)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $aspek->kategori }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $aspek->deskripsi }}</td>

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\GuruProfil;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class KelasController extends Controller
 {
@@ -13,7 +15,7 @@ class KelasController extends Controller
      */
     public function index()
     {
-        $kelass = Kelas::with('siswa')->latest()->get();
+        $kelass = Kelas::with('waliKelas')->get();
         return view('admin.kelas.index', compact('kelass'));
     }
 
@@ -22,7 +24,8 @@ class KelasController extends Controller
      */
     public function create()
     {
-        return view('admin.kelas.create');
+         $guruList = GuruProfil::all();
+        return view('admin.kelas.create',compact('guruList'));
     }
 
     /**
@@ -31,14 +34,12 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'nama_kelas' => 'required|string|max:255',
+           'nama_kelas' => 'required|string|unique:kelas,nama_kelas',
+            'id_guru_wali' => 'nullable|exists:guru_profils,id_guru'
 
         ]);
 
-        $kelas = Kelas::create([
-            'nama_kelas' => $validatedData['nama_kelas'],
-
-        ]);
+        Kelas::create($validatedData);
 
         return redirect()->route('admin.kelas.index')->with('success', 'Data Kelas berhasil ditambahkan.');
     }
@@ -56,7 +57,8 @@ class KelasController extends Controller
      */
     public function edit(Kelas $kelas)
     {
-        return view('admin.kelas.edit', compact('kelas'));
+         $guruList = GuruProfil::all();
+        return view('admin.kelas.edit', compact('kelas','guruList'));
     }
 
     /**
@@ -64,13 +66,14 @@ class KelasController extends Controller
      */
     public function update(Request $request, Kelas $kelas)
     {
-        $validatedData = $request->validate([
-            'nama_kelas' => 'required|string|max:255',
+         $validatedData = $request->validate([
+            'nama_kelas' => ['required', 'string', Rule::unique('kelas')->ignore($kelas->id_kelas,'id_kelas')],
+            'id_guru_wali' => 'nullable|exists:guru_profils,id_guru' // <-- VALIDASI BARU
         ]);
 
         $kelas->update($validatedData);
 
-        return redirect()->route('admin.kelas.index')->with('success', 'Data siswa berhasil diperbarui.');
+        return redirect()->route('admin.kelas.index')->with('success', 'Data kelas berhasil diperbarui.');
     }
 
     /**

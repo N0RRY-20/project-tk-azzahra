@@ -49,8 +49,8 @@
         </form>
 
         <p class="text-sm text-center text-gray-600">
-            Belum punya akun?
-            <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Daftar di sini</a>
+            Orang Tua Murid?
+            <a href="{{ route('aktivasi.create') }}" class="text-blue-600 hover:underline">Aktivasi Akun Anda</a>
         </p>
     </div>
 

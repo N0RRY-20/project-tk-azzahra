@@ -15,13 +15,14 @@ return new class extends Migration
             $table->bigIncrements('id_siswa');
             $table->string('nama_lengkap');
             $table->date('tanggal_lahir')->nullable();
-
-            // Foreign Key ke tabel kelas
+    
+            // TAMBAHKAN KOLOM INI
+            $table->string('telepon_orangtua', 20)->nullable();
+    
+            // Foreign Keys
             $table->foreignId('id_kelas')->constrained('kelas', 'id_kelas')->onDelete('restrict');
-
-            // Foreign Key ke tabel users (untuk orang tua), boleh kosong
             $table->foreignId('id_orangtua')->nullable()->unique()->constrained('users')->onDelete('cascade');
-
+            
             $table->string('kode_aktivasi', 10)->nullable()->unique();
             $table->timestamps();
         });

@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'guru' => \App\Http\Middleware\GuruMiddleware::class,
+            'orangtua' => \App\Http\Middleware\OrangtuaMiddleware::class, 
         ]);
         // daftarkan alias middleware lain jika ada
     })
