@@ -16,8 +16,12 @@ class Kelas extends Model
     {
         return $this->hasMany(Siswa::class, 'id_kelas');
     }
-     public function waliKelas()
+    public function waliKelas()
     {
         return $this->belongsTo(GuruProfil::class, 'id_guru_wali', 'id_guru');
+    }
+    public function jadwalKegiatan()
+    {
+        return $this->hasMany(JadwalKegiatan::class, 'id_kelas', 'id_kelas');
     }
 }

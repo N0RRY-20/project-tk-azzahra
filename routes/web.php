@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\SiswaController as AdminSiswaController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\AspekPenilaianController;
+use App\Http\Controllers\Admin\JadwalController;
 use App\Http\Controllers\Admin\RekapAbsensiController;
 use App\Http\Controllers\Guru\AbsensiController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
@@ -24,9 +25,12 @@ use App\Http\Controllers\Orangtua\DashboardController as OrangtuaDashboardContro
 |--------------------------------------------------------------------------
 | Rute ini hanya bisa diakses oleh pengguna yang BELUM login.
 */
+
 Route::middleware('guest')->group(function () {
-    Route::get('/', function () { return redirect()->route('login'); });
-    
+    Route::get('/', function () {
+        return redirect()->route('login');
+    });
+
     // Rute untuk Login
     Route::get('/login', [LoginController::class, 'index'])->name('login');
     Route::post('/login', [LoginController::class, 'auth'])->name('login.check');
@@ -44,7 +48,7 @@ Route::middleware('guest')->group(function () {
 */
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    
+
     // Dashboard fallback jika peran tidak cocok (seharusnya tidak terjadi)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
@@ -62,11 +66,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('kelas', KelasController::class);
     Route::resource('aspekPenilaian', AspekPenilaianController::class);
 
-     // Rute untuk Rekap Absensi
-     Route::get('/rekap-absensi/siswa', [RekapAbsensiController::class, 'rekapSiswa'])->name('absensi.siswa');
-    
-      // Rute CRUD untuk Manajemen Absensi Guru
+    // Rute untuk Rekap Absensi
+    Route::get('/rekap-absensi/siswa', [RekapAbsensiController::class, 'rekapSiswa'])->name('absensi.siswa');
+
+    // Rute CRUD untuk Manajemen Absensi Guru
     Route::resource('absensi-guru', AbsensiGuruController::class);
+    // Rute CRUD untuk Manajemen Jadwal Kegiatan
+    Route::resource('jadwal-kegiatan', JadwalController::class);
 });
 
 
@@ -75,20 +81,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 | Rute Khusus Guru
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth','guru'])->prefix('guru')->name('guru.')->group(function(){
+Route::middleware(['auth', 'guru'])->prefix('guru')->name('guru.')->group(function () {
     Route::get('/dashboard', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::get('/siswa/{siswa}', [GuruSiswaController::class, 'show'])->name('siswa.show');
-    
+
     // Rute kustom untuk form 'create' laporan
     Route::get('/laporan/create/{siswa}', [LaporanController::class, 'create'])->name('laporan.create');
-    
+
     // Gunakan resource untuk sisanya (store, edit, update, destroy)
     Route::resource('laporan', LaporanController::class)->except(['index', 'show', 'create']);
 
-     // Rute untuk Absensi Siswa
-     Route::get('/absensi/riwayat', [AbsensiController::class, 'index'])->name('absensi.index'); 
-     Route::get('/absensi', [AbsensiController::class, 'create'])->name('absensi.create');
-     Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
+    // Rute untuk Absensi Siswa
+    Route::get('/absensi/riwayat', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::get('/absensi', [AbsensiController::class, 'create'])->name('absensi.create');
+    Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
 });
 
 
@@ -97,6 +103,6 @@ Route::middleware(['auth','guru'])->prefix('guru')->name('guru.')->group(functio
 | Rute Khusus Orang Tua
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'orangtua'])->prefix('orangtua')->name('orangtua.')->group(function(){
+Route::middleware(['auth', 'orangtua'])->prefix('orangtua')->name('orangtua.')->group(function () {
     Route::get('/dashboard', [OrangtuaDashboardController::class, 'index'])->name('dashboard');
 });

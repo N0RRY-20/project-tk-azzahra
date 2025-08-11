@@ -14,11 +14,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-             // Panggil seeder tanpa ketergantungan dulu
-             KelasSeeder::class,
-             AspekPenilaianSeeder::class,
-             // Baru panggil seeder yang punya ketergantungan
-             UserAndSiswaSeeder::class,
+            // Panggil seeder tanpa ketergantungan dulu
+            KelasSeeder::class,
+            AspekPenilaianSeeder::class,
+            // Baru panggil seeder yang punya ketergantungan
+            UserAndSiswaSeeder::class,
+            JadwalKegiatanSeeder::class,
         ]);
     }
 }

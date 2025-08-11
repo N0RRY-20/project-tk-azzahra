@@ -26,7 +26,7 @@ class SiswaController extends Controller
     {
         $siswa = new Siswa();
         $kelasList = Kelas::all(); // Untuk dropdown pilihan kelas
-        return view('admin.siswa.create', compact('kelasList','siswa'));
+        return view('admin.siswa.create', compact('kelasList', 'siswa'));
     }
 
     /**
@@ -39,6 +39,8 @@ class SiswaController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'telepon_orangtua' => 'nullable|string|max:20',
             'id_kelas' => 'required|exists:kelas,id_kelas',
+            'riwayat_kesehatan' => 'nullable|string',
+            'catatan_khusus_ortu' => 'nullable|string',
         ]);
 
         // Tambahkan kode aktivasi unik
@@ -76,6 +78,8 @@ class SiswaController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'telepon_orangtua' => 'nullable|string|max:20',
             'id_kelas' => 'required|exists:kelas,id_kelas',
+            'riwayat_kesehatan' => 'nullable|string',
+            'catatan_khusus_ortu' => 'nullable|string',
         ]);
 
         if ($request->has('regenerate_code')) {
