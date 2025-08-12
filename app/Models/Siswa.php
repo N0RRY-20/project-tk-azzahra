@@ -46,4 +46,11 @@ class Siswa extends Model
     {
         return $this->hasMany(BukuKomunikasi::class, 'id_siswa', 'id_siswa');
     }
+
+    // app/Models/Siswa.php
+    public function tagihan()
+    {
+        // Satu siswa punya banyak tagihan
+        return $this->hasMany(Tagihan::class, 'id_siswa', 'id_siswa');
+    }
 }
