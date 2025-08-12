@@ -11,8 +11,8 @@ class SiswaController extends Controller
     public function show(Siswa $siswa)
     {
         // Eager load relasi untuk efisiensi
-        $siswa->load(['laporanPerkembangan.guru', 'laporanPerkembangan.aspek']);
-        
+        $siswa->load(['laporanPerkembangan.guru', 'laporanPerkembangan.aspek', 'komunikasi.pengirim']);
+
         return view('guru.siswa.show', compact('siswa'));
     }
 }

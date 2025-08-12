@@ -39,4 +39,11 @@ class Siswa extends Model
         // Satu siswa memiliki banyak (hasMany) catatan absensi
         return $this->hasMany(AbsensiSiswa::class, 'id_siswa', 'id_siswa');
     }
+    /**
+     * Relasi ke semua pesan komunikasi yang terkait dengan siswa ini.
+     */
+    public function komunikasi()
+    {
+        return $this->hasMany(BukuKomunikasi::class, 'id_siswa', 'id_siswa');
+    }
 }

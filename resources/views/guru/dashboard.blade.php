@@ -13,6 +13,39 @@
         @endif
 
         {{-- =============================================================== --}}
+        {{--              BAGIAN BARU UNTUK PENGUMUMAN & EVENT                --}}
+        {{-- =============================================================== --}}
+        <div class="mb-8">
+            <h2 class="text-xl text-gray-700 mb-4">Pengumuman & Event Terbaru</h2>
+            <div class="space-y-4">
+                @forelse ($pengumumanList as $item)
+                    <div
+                        class="bg-white shadow-md rounded-lg p-4 border-l-4 {{ $item->tipe == 'Event' ? 'border-indigo-500' : 'border-green-500' }}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-bold text-gray-800">{{ $item->judul }}</p>
+                                <p class="text-sm text-gray-600 mt-1">{{ Str::limit($item->isi, 150) }}</p>
+                            </div>
+                            <span
+                                class="text-xs font-semibold px-2 py-1 rounded-full {{ $item->tipe == 'Event' ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800' }}">
+                                {{ $item->tipe }}
+                            </span>
+                        </div>
+                        @if ($item->tipe == 'Event' && $item->tanggal_event)
+                            <p class="text-sm font-semibold text-indigo-700 mt-2">Tanggal Event:
+                                {{ \Carbon\Carbon::parse($item->tanggal_event)->format('d M Y') }}</p>
+                        @endif
+                    </div>
+                @empty
+                    <div class="bg-white shadow-md rounded-lg p-4 text-center text-gray-500">
+                        Tidak ada pengumuman atau event terbaru.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+
+        {{-- =============================================================== --}}
         {{--                BAGIAN BARU UNTUK JADWAL HARI INI                 --}}
         {{-- =============================================================== --}}
         <div class="bg-white shadow-md rounded-lg mb-8">

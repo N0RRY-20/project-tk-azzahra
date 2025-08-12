@@ -22,6 +22,7 @@ class AbsensiSiswa extends Model
         'tanggal',
         'status',
         'keterangan',
+        'waktu_hadir',
     ];
 
     /**

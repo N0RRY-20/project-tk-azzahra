@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kelas;
+use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,8 @@ class DashboardController extends Controller
                 ->orderBy('waktu_mulai')
                 ->get();
         }
+        $pengumumanList = Pengumuman::latest()->take(5)->get();
 
-        return view('guru.dashboard', compact('siswas', 'kelas', 'jadwalHariIni'));
+        return view('guru.dashboard', compact('siswas', 'kelas', 'jadwalHariIni', 'pengumumanList'));
     }
 }

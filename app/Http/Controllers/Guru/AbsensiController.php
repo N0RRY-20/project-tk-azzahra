@@ -22,9 +22,9 @@ class AbsensiController extends Controller
         $tanggalPilihan = $request->input('tanggal', Carbon::today()->toDateString());
 
         $absensiList = AbsensiSiswa::whereIn('id_siswa', $kelas->siswa->pluck('id_siswa'))
-                                    ->whereDate('tanggal', $tanggalPilihan)
-                                    ->with('siswa')
-                                    ->get();
+            ->whereDate('tanggal', $tanggalPilihan)
+            ->with('siswa')
+            ->get();
 
         return view('guru.absensi.index', compact('kelas', 'absensiList', 'tanggalPilihan'));
     }
@@ -36,9 +36,9 @@ class AbsensiController extends Controller
 
         // Ambil data absensi yang sudah ada untuk hari ini
         $absensiHariIni = AbsensiSiswa::whereIn('id_siswa', $kelas->siswa->pluck('id_siswa'))
-                                      ->whereDate('tanggal', Carbon::today())
-                                      ->get()
-                                      ->keyBy('id_siswa');
+            ->whereDate('tanggal', Carbon::today())
+            ->get()
+            ->keyBy('id_siswa');
 
         return view('guru.absensi.create', compact('kelas', 'absensiHariIni'));
     }
@@ -46,8 +46,9 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'absensi' => 'required|array',
-            'absensi.*.status' => 'required|string',
+            'absensi.*.status' => 'required|string|in:Hadir,Terlambat,Izin,Sakit,Alpa',
             'absensi.*.keterangan' => 'nullable|string',
+            'absensi.*.waktu_hadir' => 'nullable|date_format:H:i',
         ]);
 
         $tanggal = Carbon::today();
@@ -60,6 +61,7 @@ class AbsensiController extends Controller
                 ],
                 [
                     'status' => $data['status'],
+                    'waktu_hadir' => ($data['status'] == 'Hadir' || $data['status'] == 'Terlambat') ? ($data['waktu_hadir'] ?? null) : null,
                     'keterangan' => $data['keterangan'] ?? null,
                 ]
             );

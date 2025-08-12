@@ -20,4 +20,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Siswa::class, 'id_orangtua');
     }
+    /**
+     * Relasi ke semua pesan yang dikirim oleh pengguna ini.
+     */
+    public function pesanTerkirim()
+    {
+        return $this->hasMany(BukuKomunikasi::class, 'id_pengirim');
+    }
 }

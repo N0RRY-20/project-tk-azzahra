@@ -28,38 +28,49 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($kelas->siswa as $siswa)
                             @php
-                                // Tentukan status dan warna latar belakang baris
-                                $status = $absensiHariIni[$siswa->id_siswa]->status ?? 'Hadir';
-                                $bgColorClass = match ($status) {
-                                    'Hadir' => 'bg-green-50',
-                                    'Izin', 'Sakit' => 'bg-yellow-50',
-                                    'Alpa' => 'bg-red-50',
-                                    default => '',
-                                };
+                                $absensi = $absensiHariIni[$siswa->id_siswa] ?? null;
+                                $status = $absensi->status ?? 'Hadir';
                             @endphp
-                            <tr class="{{ $bgColorClass }}">
+                            {{-- Logika x-data sekarang juga mengenali 'Terlambat' --}}
+                            <tr x-data="{ status: '{{ $status }}' }"
+                                class="{{ $status == 'Hadir' || $status == 'Terlambat' ? 'bg-green-50' : ($status == 'Alpa' ? 'bg-red-50' : 'bg-yellow-50') }}">
                                 <td class="px-6 py-4 font-medium">{{ $siswa->nama_lengkap }}</td>
                                 <td class="px-6 py-4">
-                                    <div class="flex items-center space-x-4 text-sm">
-                                        <label class="flex items-center"><input type="radio"
+                                    <div class="flex items-center space-x-4 text-sm flex-wrap">
+                                        <label class="flex items-center mr-2 mb-1"><input type="radio" x-model="status"
                                                 name="absensi[{{ $siswa->id_siswa }}][status]" value="Hadir"
-                                                {{ $status == 'Hadir' ? 'checked' : '' }} class="mr-1"> Hadir</label>
-                                        <label class="flex items-center"><input type="radio"
+                                                class="mr-1"> Hadir</label>
+                                        {{-- TOMBOL RADIO BARU --}}
+                                        <label class="flex items-center mr-2 mb-1"><input type="radio" x-model="status"
+                                                name="absensi[{{ $siswa->id_siswa }}][status]" value="Terlambat"
+                                                class="mr-1"> Terlambat</label>
+                                        <label class="flex items-center mr-2 mb-1"><input type="radio" x-model="status"
                                                 name="absensi[{{ $siswa->id_siswa }}][status]" value="Izin"
-                                                {{ $status == 'Izin' ? 'checked' : '' }} class="mr-1"> Izin</label>
-                                        <label class="flex items-center"><input type="radio"
+                                                class="mr-1"> Izin</label>
+                                        <label class="flex items-center mr-2 mb-1"><input type="radio" x-model="status"
                                                 name="absensi[{{ $siswa->id_siswa }}][status]" value="Sakit"
-                                                {{ $status == 'Sakit' ? 'checked' : '' }} class="mr-1"> Sakit</label>
-                                        <label class="flex items-center"><input type="radio"
+                                                class="mr-1"> Sakit</label>
+                                        <label class="flex items-center mr-2 mb-1"><input type="radio" x-model="status"
                                                 name="absensi[{{ $siswa->id_siswa }}][status]" value="Alpa"
-                                                {{ $status == 'Alpa' ? 'checked' : '' }} class="mr-1"> Alpa</label>
+                                                class="mr-1"> Alpa</label>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <input type="text" name="absensi[{{ $siswa->id_siswa }}][keterangan]"
-                                        class="w-full border rounded px-2 py-1 bg-white"
-                                        value="{{ $absensiHariIni[$siswa->id_siswa]->keterangan ?? '' }}"
-                                        placeholder="Opsional...">
+                                    {{-- Input jam hadir, muncul jika status 'Hadir' atau 'Terlambat' --}}
+                                    <div x-show="status === 'Hadir' || status === 'Terlambat'"
+                                        class="flex items-center space-x-2">
+                                        <label for="waktu_hadir_{{ $siswa->id_siswa }}" class="text-sm">Jam Hadir:</label>
+                                        <input type="time" name="absensi[{{ $siswa->id_siswa }}][waktu_hadir]"
+                                            id="waktu_hadir_{{ $siswa->id_siswa }}" class="border rounded px-2 py-1 w-28"
+                                            value="{{ $absensi->waktu_hadir ?? '' }}">
+                                    </div>
+                                    {{-- Input keterangan, muncul jika status BUKAN 'Hadir' atau 'Terlambat' --}}
+                                    <div x-show="status !== 'Hadir' && status !== 'Terlambat'">
+                                        <input type="text" name="absensi[{{ $siswa->id_siswa }}][keterangan]"
+                                            class="w-full border rounded px-2 py-1"
+                                            value="{{ $absensi->keterangan ?? '' }}"
+                                            placeholder="Keterangan (opsional)...">
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Orangtua;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -51,9 +52,10 @@ class DashboardController extends Controller
             },
             'absensi' => function ($query) {
                 $query->latest('tanggal');
-            }
+            },
+            'komunikasi.pengirim'
         ]);
-
-        return view('orangtua.dashboard', compact('siswa', 'jadwalHariIni'));
+        $pengumumanList = Pengumuman::latest()->take(5)->get();
+        return view('orangtua.dashboard', compact('siswa', 'jadwalHariIni', 'pengumumanList'));
     }
 }

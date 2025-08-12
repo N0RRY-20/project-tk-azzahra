@@ -12,7 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('buku_komunikasi', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_komunikasi');
+
+            // Setiap pesan terikat pada satu siswa
+            $table->foreignId('id_siswa')->constrained('siswa', 'id_siswa')->onDelete('cascade');
+
+            // Setiap pesan memiliki satu pengirim (dari tabel users)
+            $table->foreignId('id_pengirim')->constrained('users')->onDelete('cascade');
+
+            // Isi pesan
+            $table->text('pesan');
+
+            // Untuk fitur notifikasi di masa depan (opsional)
+            $table->boolean('sudah_dibaca')->default(false);
+
             $table->timestamps();
         });
     }

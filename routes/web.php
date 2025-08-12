@@ -12,7 +12,11 @@ use App\Http\Controllers\Admin\SiswaController as AdminSiswaController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\AspekPenilaianController;
 use App\Http\Controllers\Admin\JadwalController;
+use App\Http\Controllers\Admin\PembayaranController;
+use App\Http\Controllers\Admin\PengumumanController;
 use App\Http\Controllers\Admin\RekapAbsensiController;
+use App\Http\Controllers\Admin\TagihanController;
+use App\Http\Controllers\BukuKomunikasiController;
 use App\Http\Controllers\Guru\AbsensiController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\SiswaController as GuruSiswaController;
@@ -51,6 +55,9 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard fallback jika peran tidak cocok (seharusnya tidak terjadi)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Rute untuk mengirim pesan di Buku Komunikasi
+    Route::post('/komunikasi', [BukuKomunikasiController::class, 'store'])->name('komunikasi.store');
 });
 
 
@@ -73,6 +80,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('absensi-guru', AbsensiGuruController::class);
     // Rute CRUD untuk Manajemen Jadwal Kegiatan
     Route::resource('jadwal-kegiatan', JadwalController::class);
+
+    // Rute CRUD untuk Manajemen Pengumuman & Event
+    Route::resource('pengumuman', PengumumanController::class);
+
+    // Rute CRUD untuk Manajemen Tagihan
+    Route::resource('tagihan', TagihanController::class);
+
+    // Rute khusus untuk menambah pembayaran pada tagihan tertentu
+    Route::get('tagihan/{tagihan}/pembayaran/create', [PembayaranController::class, 'create'])->name('pembayaran.create');
+    Route::post('tagihan/{tagihan}/pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
 });
 
 

@@ -40,8 +40,7 @@
                         <a href="{{ route('admin.jadwal-kegiatan.index') }}"
                             class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.jadwal-kegiatan.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Manajemen
                             Jadwal</a>
-                    </div>
-                    <div class="mt-4">
+
                         <p class="px-4 text-xs text-gray-400 uppercase">Rekapitulasi</p>
                         <a href="{{ route('admin.absensi.siswa') }}"
                             class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.absensi.siswa') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Absensi
@@ -49,13 +48,16 @@
                         <a href="{{ route('admin.absensi-guru.index') }}"
                             class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.absensi-guru.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Absensi
                             Guru</a>
-
+                        <a href="{{ route('admin.pengumuman.index') }}"
+                            class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.pengumuman.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Pengumuman</a>
+                        <a href="{{ route('admin.tagihan.index') }}"
+                            class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('admin.tagihan.*') || request()->routeIs('admin.pembayaran.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Keuangan</a>
                     </div>
                 @endif
                 @if (Auth::user()->peran === 'guru')
                     <a href="{{ route('guru.dashboard') }}"
                         class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('guru.dashboard.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Dashboard</a>
-                    <a href="{{ route('guru.absensi.create') }}"
+                    <a href="{{ route('guru.absensi.index') }}"
                         class="block py-2.5 px-4 rounded transition duration-200 {{ request()->routeIs('guru.absensi.*') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">Absensi
                         Harian</a>
                 @endif

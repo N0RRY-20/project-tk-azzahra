@@ -20,13 +20,52 @@
         </div>
 
         <hr class="my-6">
-
-        <h2 class="text-xl text-gray-700 mb-4">Riwayat Laporan Perkembangan</h2>
         @if (session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                 <span class="block sm:inline">{{ session('success') }}</span>
             </div>
         @endif
+
+        {{-- BAGIAN BUKU KOMUNIKASI --}}
+        <div class="bg-white shadow-md rounded-lg">
+            <div class="p-4 border-b">
+                <h3 class="text-lg font-semibold">Buku Komunikasi Digital</h3>
+            </div>
+            <div class="p-4 h-96 overflow-y-auto space-y-4">
+                {{-- Loop untuk menampilkan pesan --}}
+                @forelse ($siswa->komunikasi as $pesan)
+                    <div class="flex {{ $pesan->pengirim->id === Auth::id() ? 'justify-end' : 'justify-start' }}">
+                        <div
+                            class="max-w-xs md:max-w-md p-3 rounded-lg {{ $pesan->pengirim->id === Auth::id() ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800' }}">
+                            <p class="text-sm font-bold">{{ $pesan->pengirim->username }}</p>
+                            <p class="text-sm">{{ $pesan->pesan }}</p>
+                            <p class="text-xs text-right mt-1 opacity-75">{{ $pesan->created_at->format('d M, H:i') }}</p>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center text-gray-500">Belum ada percakapan.</p>
+                @endforelse
+            </div>
+            <div class="p-4 border-t">
+                {{-- Form untuk mengirim pesan --}}
+                <form action="{{ route('komunikasi.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="id_siswa" value="{{ $siswa->id_siswa }}">
+                    <div class="flex space-x-2">
+                        <input type="text" name="pesan"
+                            class="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Ketik pesan..." required>
+                        <button type="submit"
+                            class="bg-blue-500 text-white rounded-full px-4 py-2 hover:bg-blue-600">Kirim</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <hr class="my-6">
+
+        <h2 class="text-xl text-gray-700 mb-4">Riwayat Laporan Perkembangan</h2>
+
 
         <div class="bg-white shadow-md rounded-lg overflow-x-auto">
             <table class="w-full table-auto">
