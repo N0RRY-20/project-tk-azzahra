@@ -1,15 +1,52 @@
 @extends('layouts.admin')
 @section('content')
     <div class="p-6">
+        {{-- di file admin/keuangan/tagihan/index.blade.php --}}
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-semibold text-gray-800">Manajemen Keuangan</h1>
-            <a href="{{ route('admin.tagihan.create') }}"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                + Buat Tagihan Baru
-            </a>
+            <div class="flex space-x-2">
+                <a href="{{ route('admin.tagihan.createMassal') }}"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Generate SPP Massal
+                </a>
+                <a href="{{ route('admin.tagihan.create') }}"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    + Buat Tagihan Satuan
+                </a>
+            </div>
         </div>
 
         @include('partials.success_message')
+        {{-- =============================================================== --}}
+        {{--                  BAGIAN BARU UNTUK HAPUS MASSAL                  --}}
+        {{-- =============================================================== --}}
+        <div class="bg-red-50 border border-red-200 p-4 rounded-lg shadow-md mb-6">
+            <h3 class="font-bold text-red-800 mb-2">Aksi Hapus Massal (Hati-hati)</h3>
+            <form action="{{ route('admin.tagihan.destroyMassal') }}" method="POST"
+                onsubmit="return confirm('PERINGATAN: Anda akan menghapus semua tagihan \'Belum Lunas\' dengan deskripsi yang dipilih. Aksi ini tidak bisa diurungkan. Lanjutkan?');">
+                @csrf
+                <div class="flex items-center space-x-4">
+                    <select name="deskripsi_massal" class="flex-1 rounded-md border-gray-300 shadow-sm" required>
+                        <option value="">-- Pilih Deskripsi Tagihan --</option>
+                        @foreach ($deskripsiList as $item)
+                            <option value="{{ $item->deskripsi }}">{{ $item->deskripsi }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
+                        Hapus Massal
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        @include('partials.success_message')
+        @if (session('error'))
+            {{-- Jangan lupa tambahkan ini di partials jika belum ada --}}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
+        {{-- ... sisa kode tabel tagihan ... --}}
 
         <div class="bg-white shadow-md rounded-lg overflow-x-auto">
             <table class="w-full table-auto">

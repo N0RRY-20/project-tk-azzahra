@@ -54,7 +54,7 @@ class DashboardController extends Controller
                 $query->latest('tanggal');
             },
             'komunikasi.pengirim',
-            'tagihan'
+            'tagihan.pembayaran'
         ]);
         $pengumumanList = Pengumuman::latest()->take(5)->get();
         return view('orangtua.dashboard', compact('siswa', 'jadwalHariIni', 'pengumumanList'));

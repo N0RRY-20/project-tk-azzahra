@@ -11,17 +11,21 @@ use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\SiswaController as AdminSiswaController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\AspekPenilaianController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\EventLombaController;
 use App\Http\Controllers\Admin\JadwalController;
 use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\PengumumanController;
 use App\Http\Controllers\Admin\RekapAbsensiController;
 use App\Http\Controllers\Admin\TagihanController;
 use App\Http\Controllers\BukuKomunikasiController;
+use App\Http\Controllers\EventController as ControllersEventController;
 use App\Http\Controllers\Guru\AbsensiController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\SiswaController as GuruSiswaController;
 use App\Http\Controllers\Guru\LaporanController;
 use App\Http\Controllers\Orangtua\DashboardController as OrangtuaDashboardController;
+use App\Http\Controllers\PendaftaranLombaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +62,14 @@ Route::middleware('auth')->group(function () {
 
     // Rute untuk mengirim pesan di Buku Komunikasi
     Route::post('/komunikasi', [BukuKomunikasiController::class, 'store'])->name('komunikasi.store');
+
+    // Rute untuk melihat daftar & detail event (bisa diakses semua peran)
+    Route::get('/events', [ControllersEventController::class, 'index'])->name('events.index');
+    Route::get('/events/{event}', [ControllersEventController::class, 'show'])->name('events.show');
+
+    // Rute untuk orang tua mendaftar & batal mendaftar lomba
+    Route::post('/lomba/daftar', [PendaftaranLombaController::class, 'store'])->name('lomba.daftar');
+    Route::delete('/lomba/batal', [PendaftaranLombaController::class, 'destroy'])->name('lomba.batal');
 });
 
 
@@ -86,10 +98,24 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Rute CRUD untuk Manajemen Tagihan
     Route::resource('tagihan', TagihanController::class);
+    // Rute untuk menampilkan form generate massal
+    Route::get('/tagihan-massal/create', [TagihanController::class, 'createMassal'])->name('tagihan.createMassal');
+    // Rute untuk memproses generate massal
+    Route::post('/tagihan-massal', [TagihanController::class, 'storeMassal'])->name('tagihan.storeMassal');
+
+    // Rute untuk memproses hapus massal
+    Route::post('/tagihan/hapus-massal', [TagihanController::class, 'destroyMassal'])->name('tagihan.destroyMassal');
 
     // Rute khusus untuk menambah pembayaran pada tagihan tertentu
     Route::get('tagihan/{tagihan}/pembayaran/create', [PembayaranController::class, 'create'])->name('pembayaran.create');
     Route::post('tagihan/{tagihan}/pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+
+
+    // Rute untuk Event utama
+    Route::resource('events', EventController::class);
+
+    // Rute untuk Lomba yang berada DI DALAM sebuah Event
+    Route::resource('events.lomba', EventLombaController::class)->shallow();
 });
 
 

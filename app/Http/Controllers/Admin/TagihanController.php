@@ -15,7 +15,8 @@ class TagihanController extends Controller
     public function index()
     {
         $tagihanList = Tagihan::with('siswa.kelas')->latest()->get();
-        return view('admin.keuangan.tagihan.index', compact('tagihanList'));
+        $deskripsiList = Tagihan::select('deskripsi')->distinct()->get();
+        return view('admin.keuangan.tagihan.index', compact('tagihanList', 'deskripsiList'));
     }
 
     /**
@@ -89,5 +90,66 @@ class TagihanController extends Controller
         // Logika delete...
         $tagihan->delete();
         return redirect()->route('admin.tagihan.index')->with('success', 'Tagihan berhasil dihapus.');
+    }
+
+    /**
+     * Menampilkan form untuk generate tagihan massal.
+     */
+    public function createMassal()
+    {
+        return view('admin.keuangan.tagihan.create_massal');
+    }
+    public function storeMassal(Request $request)
+    {
+        $validatedData = $request->validate([
+            'deskripsi' => 'required|string|max:255',
+            'jumlah_tagihan' => 'required|integer|min:0',
+            'tanggal_jatuh_tempo' => 'required|date',
+        ]);
+
+        // Ambil semua siswa yang aktif (untuk sekarang kita ambil semua)
+        $siswas = Siswa::all();
+        $tagihanBaru = [];
+        $now = now();
+
+        foreach ($siswas as $siswa) {
+            $tagihanBaru[] = [
+                'id_siswa' => $siswa->id_siswa,
+                'deskripsi' => $validatedData['deskripsi'],
+                'jumlah_tagihan' => $validatedData['jumlah_tagihan'],
+                'tanggal_jatuh_tempo' => $validatedData['tanggal_jatuh_tempo'],
+                'status' => 'Belum Lunas',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        // Gunakan satu query insert untuk efisiensi
+        if (!empty($tagihanBaru)) {
+            Tagihan::insert($tagihanBaru);
+        }
+
+        return redirect()->route('admin.tagihan.index')
+            ->with('success', count($tagihanBaru) . ' tagihan baru berhasil di-generate.');
+    }
+    public function destroyMassal(Request $request)
+    {
+        $validated = $request->validate([
+            'deskripsi_massal' => 'required|string|exists:tagihan,deskripsi',
+        ]);
+
+        $deskripsi = $validated['deskripsi_massal'];
+
+        // PENGAMAN: Hapus semua tagihan yang cocok dengan deskripsi 
+        // DAN statusnya masih 'Belum Lunas'
+        $jumlahDihapus = Tagihan::where('deskripsi', $deskripsi)
+            ->where('status', 'Belum Lunas')
+            ->delete();
+
+        if ($jumlahDihapus > 0) {
+            return redirect()->route('admin.tagihan.index')->with('success', "$jumlahDihapus tagihan berhasil dihapus secara massal.");
+        }
+
+        return redirect()->route('admin.tagihan.index')->with('error', "Tidak ada tagihan 'Belum Lunas' dengan deskripsi tersebut yang bisa dihapus.");
     }
 }

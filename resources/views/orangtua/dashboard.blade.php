@@ -1,4 +1,4 @@
-@extends('layouts.admin') {{-- Menggunakan layout admin yang sama untuk kerangka --}}
+@extends('layouts.admin')
 
 @section('content')
     <div class="p-6" x-data="{ activeTab: 'laporan' }">
@@ -51,18 +51,21 @@
         {{-- =============================================================== --}}
         <div class="bg-white shadow-md rounded-lg">
             <div class="border-b border-gray-200">
-                <nav class="-mb-px flex space-x-6 px-6">
+                <nav class="-mb-px flex space-x-6 px-6 overflow-x-auto">
                     <a href="#" @click.prevent="activeTab = 'laporan'"
-                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'laporan', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'laporan' }"
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'laporan', 'border-transparent text-gray-500 hover:text-gray-700': activeTab !== 'laporan' }"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Laporan Perkembangan</a>
                     <a href="#" @click.prevent="activeTab = 'absensi'"
-                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'absensi', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'absensi' }"
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'absensi', 'border-transparent text-gray-500 hover:text-gray-700': activeTab !== 'absensi' }"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Riwayat Absensi</a>
                     <a href="#" @click.prevent="activeTab = 'keuangan'"
-                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'keuangan', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'keuangan' }"
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'keuangan', 'border-transparent text-gray-500 hover:text-gray-700': activeTab !== 'keuangan' }"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Info Keuangan</a>
+                    <a href="#" @click.prevent="activeTab = 'jadwal'"
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'jadwal', 'border-transparent text-gray-500 hover:text-gray-700': activeTab !== 'jadwal' }"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Jadwal Hari Ini</a>
                     <a href="#" @click.prevent="activeTab = 'komunikasi'"
-                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'komunikasi', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'komunikasi' }"
+                        :class="{ 'border-blue-500 text-blue-600': activeTab === 'komunikasi', 'border-transparent text-gray-500 hover:text-gray-700': activeTab !== 'komunikasi' }"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Buku Komunikasi</a>
                 </nav>
             </div>
@@ -93,21 +96,40 @@
 
                 {{-- KONTEN TAB 2: RIWAYAT ABSENSI --}}
                 <div x-show="activeTab === 'absensi'" class="overflow-x-auto">
-                    <table class="w-full table-auto">
+                    <table class="w-full text-sm">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left ...">Tanggal</th>
-                                <th class="px-6 py-3 text-left ...">Status</th>
-                                <th class="px-6 py-3 text-left ...">Keterangan</th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Tanggal
+                                </th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Status
+                                </th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">
+                                    Keterangan</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y">
+                        <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($siswa->absensi as $absen)
                                 <tr>
-                                    <td class="px-6 py-4">{{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {{-- ... logika badge warna ... --}}
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @php
+                                            $status = $absen->status;
+                                            $badgeColor = match ($status) {
+                                                'Hadir' => 'bg-green-100 text-green-800',
+                                                'Terlambat' => 'bg-yellow-100 text-yellow-800',
+                                                'Izin', 'Sakit' => 'bg-blue-100 text-blue-800',
+                                                'Alpa' => 'bg-red-100 text-red-800',
+                                                default => 'bg-gray-100 text-gray-800',
+                                            };
+                                        @endphp
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $badgeColor }}">
+                                            {{ $status }}
+                                            @if (($status == 'Hadir' || $status == 'Terlambat') && $absen->waktu_hadir)
+                                                ({{ date('H:i', strtotime($absen->waktu_hadir)) }})
+                                            @endif
+                                        </span>
                                     </td>
                                     <td class="px-6 py-4">{{ $absen->keterangan ?: '-' }}</td>
                                 </tr>
@@ -123,37 +145,75 @@
 
                 {{-- KONTEN TAB 3: INFO KEUANGAN --}}
                 <div x-show="activeTab === 'keuangan'" class="overflow-x-auto">
-                    <table class="w-full table-auto">
+                    <table class="w-full text-sm">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left ...">Deskripsi</th>
-                                <th class="px-6 py-3 text-left ...">Jumlah</th>
-                                <th class="px-6 py-3 text-left ...">Jatuh Tempo</th>
-                                <th class="px-6 py-3 text-left ...">Status</th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Deskripsi
+                                </th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Jumlah
+                                </th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Sisa</th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Jatuh
+                                    Tempo</th>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Status
+                                </th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y">
+                        <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($siswa->tagihan as $tagihan)
+                                @php
+                                    $totalTerbayar = $tagihan->pembayaran->sum('jumlah_bayar');
+                                    $sisaTagihan = $tagihan->jumlah_tagihan - $totalTerbayar;
+                                @endphp
                                 <tr>
                                     <td class="px-6 py-4">{{ $tagihan->deskripsi }}</td>
                                     <td class="px-6 py-4">Rp {{ number_format($tagihan->jumlah_tagihan, 0, ',', '.') }}
                                     </td>
+                                    <td
+                                        class="px-6 py-4 font-bold {{ $sisaTagihan > 0 ? 'text-red-600' : 'text-green-600' }}">
+                                        Rp {{ number_format($sisaTagihan, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4">
                                         {{ \Carbon\Carbon::parse($tagihan->tanggal_jatuh_tempo)->format('d M Y') }}</td>
                                     <td class="px-6 py-4">
-                                        {{-- ... logika badge warna ... --}}
+                                        @php
+                                            $statusColor = match ($tagihan->status) {
+                                                'Lunas' => 'bg-green-100 text-green-800',
+                                                'Sebagian' => 'bg-yellow-100 text-yellow-800',
+                                                default => 'bg-red-100 text-red-800',
+                                            };
+                                        @endphp
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColor }}">
+                                            {{ $tagihan->status }}
+                                        </span>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">Tidak ada tagihan.</td>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada tagihan.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                {{-- KONTEN TAB 4: BUKU KOMUNIKASI --}}
+                {{-- KONTEN TAB 4: JADWAL HARI INI --}}
+                <div x-show="activeTab === 'jadwal'" class="divide-y divide-gray-200">
+                    @forelse ($jadwalHariIni as $jadwal)
+                        <div class="p-4 flex items-center">
+                            <div class="w-24 text-gray-600 font-mono">{{ date('H:i', strtotime($jadwal->waktu_mulai)) }}
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">{{ $jadwal->kegiatan }}</p>
+                                <p class="text-sm text-gray-500">{{ $jadwal->keterangan }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-4 text-center text-gray-500">Tidak ada jadwal kegiatan untuk hari ini.</div>
+                    @endforelse
+                </div>
+
+                {{-- KONTEN TAB 5: BUKU KOMUNIKASI --}}
                 <div x-show="activeTab === 'komunikasi'">
                     <div class="p-4 h-96 overflow-y-auto space-y-4">
                         @forelse ($siswa->komunikasi as $pesan)
@@ -185,6 +245,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
