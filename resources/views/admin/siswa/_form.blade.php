@@ -10,6 +10,29 @@
     @enderror
 </div>
 
+{{-- Jenis Kelamin --}}
+<div class="mb-4">
+    <label class="block text-gray-700 font-bold mb-2">Jenis Kelamin</label>
+    <div class="flex items-center space-x-4">
+        @php
+            $jk = old('jenis_kelamin', $siswa->jenis_kelamin ?? '');
+        @endphp
+        <label class="flex items-center">
+            <input type="radio" name="jenis_kelamin" value="Laki-laki" class="mr-1"
+                {{ $jk == 'Laki-laki' ? 'checked' : '' }}>
+            Laki-laki
+        </label>
+        <label class="flex items-center">
+            <input type="radio" name="jenis_kelamin" value="Perempuan" class="mr-1"
+                {{ $jk == 'Perempuan' ? 'checked' : '' }}>
+            Perempuan
+        </label>
+    </div>
+    @error('jenis_kelamin')
+        <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+    @enderror
+</div>
+
 {{-- Tanggal Lahir --}}
 <div class="mb-4">
     <label for="tanggal_lahir" class="block text-gray-700 font-bold mb-2">Tanggal Lahir</label>

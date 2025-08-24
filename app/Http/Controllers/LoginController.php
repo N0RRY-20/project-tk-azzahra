@@ -29,8 +29,6 @@ class LoginController extends Controller
             if (Auth::user()->peran === 'orangtua') {
                 return redirect()->route('orangtua.dashboard');
             }
-
-            return redirect()->intended('dashboard');
         }
 
 

@@ -24,4 +24,8 @@ class Kelas extends Model
     {
         return $this->hasMany(JadwalKegiatan::class, 'id_kelas', 'id_kelas');
     }
+    public function rppm()
+    {
+        return $this->hasMany(Rppm::class, 'id_kelas', 'id_kelas');
+    }
 }

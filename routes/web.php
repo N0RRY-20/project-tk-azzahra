@@ -11,21 +11,28 @@ use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\SiswaController as AdminSiswaController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\AspekPenilaianController;
+use App\Http\Controllers\Admin\ATPController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\EventLombaController;
 use App\Http\Controllers\Admin\JadwalController;
 use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\PengumumanController;
+use App\Http\Controllers\Admin\RaportController;
 use App\Http\Controllers\Admin\RekapAbsensiController;
+use App\Http\Controllers\Admin\SupervisiRppController;
 use App\Http\Controllers\Admin\TagihanController;
 use App\Http\Controllers\BukuKomunikasiController;
 use App\Http\Controllers\EventController as ControllersEventController;
 use App\Http\Controllers\Guru\AbsensiController;
+use App\Http\Controllers\Guru\ATPController as GuruATPController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\SiswaController as GuruSiswaController;
 use App\Http\Controllers\Guru\LaporanController;
+use App\Http\Controllers\Guru\RpphController;
+use App\Http\Controllers\Guru\RppmController;
 use App\Http\Controllers\Orangtua\DashboardController as OrangtuaDashboardController;
 use App\Http\Controllers\PendaftaranLombaController;
+use App\Http\Controllers\ProfilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,9 +64,6 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Dashboard fallback jika peran tidak cocok (seharusnya tidak terjadi)
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
     // Rute untuk mengirim pesan di Buku Komunikasi
     Route::post('/komunikasi', [BukuKomunikasiController::class, 'store'])->name('komunikasi.store');
 
@@ -70,6 +74,11 @@ Route::middleware('auth')->group(function () {
     // Rute untuk orang tua mendaftar & batal mendaftar lomba
     Route::post('/lomba/daftar', [PendaftaranLombaController::class, 'store'])->name('lomba.daftar');
     Route::delete('/lomba/batal', [PendaftaranLombaController::class, 'destroy'])->name('lomba.batal');
+
+    // Rute untuk Profil & Pengaturan
+    Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
+    Route::put('/profil/data', [ProfilController::class, 'updateData'])->name('profil.update.data');
+    Route::put('/profil/password', [ProfilController::class, 'updatePassword'])->name('profil.update.password');
 });
 
 
@@ -82,7 +91,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::resource('guru', GuruController::class);
     Route::resource('siswa', AdminSiswaController::class);
-    Route::resource('kelas', KelasController::class);
+    Route::resource('kelas', KelasController::class)->parameters([
+        'kelas' => 'kelas'
+    ]);
     Route::resource('aspekPenilaian', AspekPenilaianController::class);
 
     // Rute untuk Rekap Absensi
@@ -116,6 +127,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Rute untuk Lomba yang berada DI DALAM sebuah Event
     Route::resource('events.lomba', EventLombaController::class)->shallow();
+
+    // Rute untuk menampilkan form generate raport
+    Route::get('/raport', [RaportController::class, 'create'])->name('raport.create');
+    // Rute untuk mencetak raport
+    Route::post('/raport/cetak', [RaportController::class, 'cetak'])->name('raport.cetak');
+
+    // Rute CRUD untuk Manajemen ATP
+    Route::resource('atp', ATPController::class);
+    // Rute untuk Supervisi RPP
+    Route::get('/supervisi-rpp', [SupervisiRppController::class, 'index'])->name('supervisi-rpp.index');
+    Route::get('/supervisi-rpp/{guru}', [SupervisiRppController::class, 'show'])->name('supervisi-rpp.show');
 });
 
 
@@ -138,6 +160,14 @@ Route::middleware(['auth', 'guru'])->prefix('guru')->name('guru.')->group(functi
     Route::get('/absensi/riwayat', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/absensi', [AbsensiController::class, 'create'])->name('absensi.create');
     Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
+
+    // Rute untuk Manajemen RPP
+    Route::resource('rppm', RppmController::class);
+    Route::resource('rppm.rpph', RpphController::class)->shallow();
+
+
+    // Rute untuk guru melihat ATP
+    Route::get('/atp', [GuruATPController::class, 'index'])->name('atp.index');
 });
 
 

@@ -17,7 +17,7 @@
     <div>
         <label for="hari" class="block text-gray-700 font-bold mb-2">Hari</label>
         <select name="hari" id="hari" class="shadow border rounded w-full py-2 px-3" required>
-            @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'] as $hari)
+            @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'sabtu', 'minggu'] as $hari)
                 <option value="{{ $hari }}" {{ old('hari', $jadwal->hari ?? '') == $hari ? 'selected' : '' }}>
                     {{ $hari }}</option>
             @endforeach

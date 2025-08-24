@@ -14,7 +14,10 @@ class DashboardController extends Controller
     public function index()
     {
         // 1. Mengambil Jumlah Siswa Aktif
-        $jumlahSiswa = Siswa::count();
+        // $jumlahSiswa = Siswa::count();
+        $jumlahSiswaLaki = Siswa::where('jenis_kelamin', 'Laki-laki')->count();
+        $jumlahSiswaPerempuan = Siswa::where('jenis_kelamin', 'Perempuan')->count();
+
 
         // 2. Mengambil Jumlah Guru
         $jumlahGuru = GuruProfil::count();
@@ -29,7 +32,9 @@ class DashboardController extends Controller
 
         // 5. Kirim semua data ke view
         return view('admin.dashboard', [
-            'jumlahSiswa' => $jumlahSiswa,
+            // 'jumlahSiswa' => $jumlahSiswa,
+            'jumlahSiswaLaki' => $jumlahSiswaLaki,
+            'jumlahSiswaPerempuan' => $jumlahSiswaPerempuan,
             'jumlahGuru' => $jumlahGuru,
             'laporanHariIni' => $laporanHariIni,
             'guruHadirHariIni' => $guruHadirHariIni,

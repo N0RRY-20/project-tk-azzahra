@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
+    <title>Dashboard {{ Auth::user()->peran }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 
 <body class="bg-gray-100 font-sans antialiased">
@@ -177,6 +177,25 @@
                                 </svg>
                                 Keuangan
                             </a>
+
+                            <div class="mt-4">
+                                <p class="px-4 text-xs text-gray-400 uppercase">Laporan Akhir</p>
+                                <a href="{{ route('admin.raport.create') }}"
+                                    class="flex items-center px-4 py-2.5 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 {{ request()->routeIs('admin.raport.create') || request()->routeIs('admin.raport.create') ? 'bg-gray-700 text-white' : '' }}">
+                                    Cetak Raport PDF
+                                </a>
+                            </div>
+                            <a href="{{ route('admin.atp.index') }}"
+                                class="flex items-center px-4 py-2.5 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 {{ request()->routeIs('admin.atp.*') ? 'bg-gray-700 text-white' : '' }}">
+                                {{-- Ikon ATP --}}
+                                Manajemen ATP
+                            </a>
+
+                            <a href="{{ route('admin.supervisi-rpp.index') }}"
+                                class="flex items-center px-4 py-2.5 ... {{ request()->routeIs('admin.supervisi-rpp.*') ? 'bg-gray-700 text-white' : '' }}">
+                                {{-- Ikon --}}
+                                Supervisi RPP
+                            </a>
                         </div>
                     </div>
                 @endif
@@ -184,7 +203,7 @@
                 @if (Auth::user()->peran === 'guru')
                     <!-- Teacher Dashboard -->
                     <a href="{{ route('guru.dashboard') }}"
-                        class="flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 {{ request()->routeIs('guru.dashboard.*') ? 'bg-gray-700 text-white' : '' }}">
+                        class="flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 {{ request()->routeIs('guru.dashboard') ? 'bg-gray-700 text-white' : '' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -201,6 +220,33 @@
                             </path>
                         </svg>
                         Absensi Harian
+                    </a>
+
+                    <a href="{{ route('guru.rppm.index') }}"
+                        class="flex items-center px-4 py-2.5 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 {{ request()->routeIs('guru.rppm.*') || request()->routeIs('guru.rpph.*') ? 'bg-gray-700 text-white' : '' }}">
+                        {{-- Ikon RPP --}}
+                        Manajemen RPP
+                    </a>
+                    <a href="{{ route('guru.atp.index') }}"
+                        class="flex items-center px-4 py-2.5 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 {{ request()->routeIs('guru.atp.*') ? 'bg-gray-700 text-white' : '' }}">
+                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L20 12l-5.447 2.724A1 1 0 0114 13.618V12M14 20l-5.447-2.724A1 1 0 018 16.382V5.618a1 1 0 011.447-.894L15 6m-1 8v5m0-5l4-2">
+                            </path>
+                        </svg>
+                        Lihat ATP
+                    </a>
+                @endif
+
+                @if (Auth::user()->peran === 'orangtua')
+                    <a href="{{ route('orangtua.dashboard') }}"
+                        class="flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 {{ request()->routeIs('orangtua.dashboard') ? 'bg-gray-700 text-white' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                            </path>
+                        </svg>
+                        Dashboard
                     </a>
                 @endif
 
@@ -254,25 +300,50 @@
                     <!-- Page Title -->
                     <div class="flex-1 min-w-0 px-4 lg:px-0">
                         <h1 class="text-lg font-semibold text-gray-900 sm:text-xl md:text-2xl lg:text-3xl">
-                            Dashboard Admin
+                            Dashboard Adminnnn
                         </h1>
                     </div>
 
                     <!-- User Welcome -->
-                    <div class="flex items-center space-x-4">
-                        <div class="hidden md:block">
-                            <p class="text-sm text-gray-700">
-                                Selamat datang, <span class="font-medium">{{ Auth::user()->username }}</span>!
-                            </p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
+                    <div x-data="{ dropdownOpen: false }" class="relative">
+                        <button @click="dropdownOpen = !dropdownOpen"
+                            class="flex items-center space-x-2 focus:outline-none">
+                            <div class="hidden md:block">
+                                <p class="text-sm text-gray-700">
+                                    Selamat datang, <span class="font-medium">{{ Auth::user()->username }}</span>!
+                                </p>
                             </div>
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </button>
+
+                        <div x-show="dropdownOpen" @click.away="dropdownOpen = false"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+
+                            <a href="{{ route('profil.edit') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Logout
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

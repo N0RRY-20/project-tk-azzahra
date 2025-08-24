@@ -9,30 +9,43 @@
         {{--            INFORMASI YANG SELALU TAMPIL (STATIS)                --}}
         {{-- =============================================================== --}}
 
-        {{-- Pengumuman --}}
         <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-700 mb-2">Pengumuman & Event Terbaru</h3>
-            <div class="space-y-3">
+            <h2 class="text-xl text-gray-700 mb-4">Pengumuman & Event Terbaru</h2>
+            <div class="space-y-4">
                 @forelse ($pengumumanList as $item)
                     <div
-                        class="bg-white shadow-md rounded-lg p-3 border-l-4 {{ $item->tipe == 'Event' ? 'border-indigo-500' : 'border-green-500' }}">
+                        class="bg-white shadow-md rounded-lg p-4 border-l-4 {{ $item->tipe == 'Event' ? 'border-indigo-500' : 'border-green-500' }}">
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="font-bold text-gray-800">{{ $item->judul }}</p>
-                                @if ($item->tipe == 'Event' && $item->tanggal_event)
-                                    <p class="text-xs font-semibold text-indigo-700">Tanggal Event:
-                                        {{ \Carbon\Carbon::parse($item->tanggal_event)->format('d M Y') }}</p>
-                                @endif
+                                <p class="text-sm text-gray-600 mt-1">{{ Str::limit($item->isi, 150) }}</p>
                             </div>
                             <span
-                                class="text-xs font-semibold px-2 py-1 rounded-full {{ $item->tipe == 'Event' ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800' }}">{{ $item->tipe }}</span>
+                                class="text-xs font-semibold px-2 py-1 rounded-full {{ $item->tipe == 'Event' ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800' }}">
+                                {{ $item->tipe }}
+                            </span>
                         </div>
+                        @if ($item->tipe == 'Event' && $item->tanggal_event)
+                            <p class="text-sm font-semibold text-indigo-700 mt-2">Tanggal Event:
+                                {{ \Carbon\Carbon::parse($item->tanggal_event)->format('d M Y') }}</p>
+                        @endif
                     </div>
                 @empty
-                    <div class="bg-white shadow-md rounded-lg p-4 text-center text-gray-500">Tidak ada pengumuman.</div>
+                    <div class="bg-white shadow-md rounded-lg p-4 text-center text-gray-500">
+                        Tidak ada pengumuman atau event terbaru.
+                    </div>
                 @endforelse
             </div>
         </div>
+
+        @if ($rppmTerkini)
+            <div class="mb-8 bg-white shadow-md rounded-lg p-4 border-l-4 border-teal-500">
+                <h3 class="text-lg font-semibold text-gray-700 mb-1">Fokus Pembelajaran Minggu Ini</h3>
+                <p class="font-bold text-teal-700">{{ $rppmTerkini->tema }}</p>
+                <p class="text-sm text-gray-600">{{ $rppmTerkini->sub_tema }}</p>
+            </div>
+        @endif
+
 
         {{-- Info Kesehatan --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-8">
@@ -76,7 +89,8 @@
                     @forelse ($siswa->laporanPerkembangan as $laporan)
                         <div class="p-4">
                             <div class="flex justify-between items-center">
-                                <p class="font-bold text-gray-800">{{ $laporan->aspek->kategori }}: {{ $laporan->capaian }}
+                                <p class="font-bold text-gray-800">{{ $laporan->aspek->kategori }}:
+                                    {{ $laporan->capaian }}
                                 </p>
                                 <p class="text-sm text-gray-500">
                                     {{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->format('d M Y') }}</p>

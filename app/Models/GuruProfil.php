@@ -26,4 +26,9 @@ class GuruProfil extends Model
         // Satu guru memiliki banyak (hasMany) catatan absensi
         return $this->hasMany(AbsensiGuru::class, 'id_guru', 'id_guru');
     }
+    public function rppm()
+    {
+        // Satu guru bisa memiliki banyak (hasMany) RPPM
+        return $this->hasMany(Rppm::class, 'id_guru', 'id_guru');
+    }
 }

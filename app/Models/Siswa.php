@@ -18,6 +18,7 @@ class Siswa extends Model
         'kode_aktivasi',
         'riwayat_kesehatan',
         'catatan_khusus_ortu',
+        'jenis_kelamin',
     ];
 
     public function kelas()

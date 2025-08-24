@@ -41,6 +41,7 @@ class SiswaController extends Controller
             'id_kelas' => 'required|exists:kelas,id_kelas',
             'riwayat_kesehatan' => 'nullable|string',
             'catatan_khusus_ortu' => 'nullable|string',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
         ]);
 
         // Tambahkan kode aktivasi unik
@@ -80,6 +81,7 @@ class SiswaController extends Controller
             'id_kelas' => 'required|exists:kelas,id_kelas',
             'riwayat_kesehatan' => 'nullable|string',
             'catatan_khusus_ortu' => 'nullable|string',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
         ]);
 
         if ($request->has('regenerate_code')) {
